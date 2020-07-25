@@ -1,0 +1,93 @@
+@import "compass/css3";
+
+$bg: #2c3e50;
+$duration: 6s;
+
+html, body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	overflow: hidden;
+	background: $bg;
+	color: #9b59b6;
+	font-size: 128px;
+}
+
+.cube, .face {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+}
+
+.cube {
+	transform-style: preserve-3d;
+	transform: rotateX(-30deg) rotateY(30deg);
+	animation: rotate $duration linear infinite;
+}
+
+@keyframes rotate {
+	from { transform: rotateX(-30deg) rotateY(-150deg); }
+	to { transform: rotateX(-30deg) rotateY(210deg); }
+}
+
+.face {
+	box-sizing: border-box;
+	width: 1em;
+	height: 1em;
+	margin: -.5em 0 0 -.5em;
+	border: 2px solid;
+	transform-style: preserve-3d;
+	&::before {
+		content: '';
+		display: block;
+		position: absolute;
+		top: -2px; left: -2px;
+		right: -2px; bottom: -2px;
+		background-repeat: no-repeat;
+		backface-visibility: hidden;
+		animation: mask $duration linear infinite;
+	}
+	&:nth-child(1) { transform:                 translateZ(.5em); }
+	&:nth-child(2) { transform: rotateY(-90deg) translateZ(.5em); }
+	&:nth-child(3) { transform: rotateX( 90deg) translateZ(.5em); }
+	&:nth-child(4) { transform: rotateY(180deg) translateZ(.5em); }
+	&:nth-child(5) { transform: rotateY( 90deg) translateZ(.5em); }
+	&:nth-child(6) { transform: rotateX(-90deg) translateZ(.5em); }
+	&:nth-child(1)::before {
+		$cx: 1em - 1em / sqrt(3);
+		$rx: 1em / sqrt(3);
+		background-image:
+			linear-gradient(to top, currentColor, currentColor),
+			linear-gradient(to top, currentColor, currentColor),
+			linear-gradient(to top right, transparent calc(50% - 1.5px), currentColor calc(50% - 1px), currentColor calc(50% + 1px), transparent calc(50% + 1.5px)),
+			linear-gradient(to top, $bg, $bg);
+		background-size: 2px .3333333em, $cx 2px, $rx 0.6666666em, calc(1em - 4px) calc(1em - 4px);
+		background-position: calc(#{$cx} - 1px) 0, 0 calc(.3333333em - 1px), bottom right, center;
+	}
+	&:nth-child(2)::before {
+		background-image:
+			linear-gradient(to top left, transparent calc(50% - 1.5px), currentColor calc(50% - 1px), currentColor calc(50% + 1px), transparent calc(50% + 1.5px)),
+			linear-gradient(to top, $bg, $bg);
+		background-size: 100% .6666666em, calc(1em - 4px) calc(1em - 4px);
+		background-position: bottom right, center;
+	}
+	&:nth-child(3)::before {
+		$rx: 1em / sqrt(3);
+		background-image:
+			linear-gradient(to top left, transparent calc(50% - 1.5px), currentColor calc(50% - 1px), currentColor calc(50% + 1px), transparent calc(50% + 1.5px)),
+			linear-gradient(to top, $bg, $bg);
+		background-size: $rx 100%, calc(1em - 4px) calc(1em - 4px);
+		background-position: bottom right, center;
+		animation: mask $duration linear infinite, topPosition $duration ease-in-out infinite;
+	}
+}
+@keyframes mask {
+	from, 50% { visibility: hidden; }
+	to { visibility: visible; }
+}
+@keyframes topPosition {
+	from, 50% { background-position: bottom right, center; }
+	to { background-position: bottom left, center; }
+}
